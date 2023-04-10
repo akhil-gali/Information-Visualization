@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+  <head >
+    <title>D3.js Scatter Plot </title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      .tooltip {
+        position: absolute;
+        padding: 5px;
+        background-color: #475466;
+        border: 1px solid #5e9799a8;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body  >
+    <h1>Scatter Plot with Tooltip</h1>
+
+    <div id="scatter-plot"></div>
+    <div class="tooltip"></div>
+    <script>
+      // Define the data
+      var data = [
+        { x: 64, y: 40 },
+        { x: 89, y: 10 },
+        { x: 35, y: 49 },
+        { x: 67, y: 34 },
+        { x: 59, y: 69 },
+        { x: 56, y: 54 },
+        { x: 89, y: 87 },
+        { x: 78, y: 45 },
+        { x: 0, y: 0 },
+        { x: 9, y: 79 },
+        
+          ];
+
+      // Set up the SVG element
+      var svg = d3.select("#scatter-plot")
+        .append("svg")
+        .attr("width", 500)
+        .attr("height", 300);
+
+      // Define the x scale
+      var xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, function(d) { return d.x; })])
+        .range([50, 450]);
+
+      // Define the y scale
+      var yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, function(d) { return d.y; })])
+        .range([250, 50]);
+
+      // Create the circles
+      svg.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) { return xScale(d.x); })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("r", 10)
+        .attr("fill", " #000000")
+        .on("mouseover", function(d) {
+          var tooltip = d3.select(".tooltip");
+          tooltip.style("visibility", "visible")
+            .text("(" + d.x + ", " + d.y + ")")
+            .style("right", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY + 10) + "px");
+        })
+        .on("mousemove", function(d) {
+          var tooltip = d3.select(".tooltip");
+          tooltip.style("left", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY + 10) + "px");
+        })
+        .on("mouseout", function(d) {
+          var tooltip = d3.select(".tooltip");
+          tooltip.style("visibility", "hidden");
+        });
+
+      // Add the x axis
+      svg.append("g")
+        .attr("transform", "translate(0,250)")
+        .call(d3.axisBottom(xScale));
+
+      // Add the y axis
+      svg.append("g")
+        .attr("transform", "translate(50,0)")
+        .call(d3.axisLeft(yScale));
+    </script>
+  </body>
+</html>
